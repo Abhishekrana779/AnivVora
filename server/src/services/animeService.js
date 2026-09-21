@@ -34,15 +34,52 @@ const transformAnime = (item) => {
 };
 
 const extractArray = (payload) => {
-  if (Array.isArray(payload)) return payload;
-  if (payload && Array.isArray(payload.data)) return payload.data;
-  if (payload && Array.isArray(payload.results)) return payload.results;
-  if (payload && typeof payload === 'object') {
-    const firstArray = Object.values(payload).find((v) => Array.isArray(v));
-    if (firstArray) return firstArray;
+if (Array.isArray(payload)) {
+return payload;
+}
+
+if (!payload || typeof payload !== 'object') {
+return [];
+}
+
+if (Array.isArray(payload.data)) {
+return payload.data;
+}
+
+if (Array.isArray(payload.results)) {
+return payload.results;
+}
+
+if (Array.isArray(payload.media)) {
+return payload.media;
+}
+
+if (Array.isArray(payload.Page?.media)) {
+return payload.Page.media;
+}
+
+if (Array.isArray(payload.data?.Page?.media)) {
+return payload.data.Page.media;
+}
+
+for (const value of Object.values(payload)) {
+if (Array.isArray(value)) {
+return value;
+}
+
+if (value && typeof value === 'object') {
+  const nested = extractArray(value);
+
+  if (nested.length > 0) {
+    return nested;
   }
-  return [];
+}
+
+}
+
+return [];
 };
+
 
 const unwrap = (result) => {
   if (
@@ -58,42 +95,41 @@ const unwrap = (result) => {
 };
 
 exports.getTrendingAnime = async () => {
-  try {
-    const results = await miruro.fetchTrending(1);
+try {
+const results = await miruro.fetchTrending(1);
 
-    console.log(
-      '[Trending] Miruro response:',
-      JSON.stringify(results, null, 2)
-    );
+console.log(
+  '[Trending] Miruro response:',
+  JSON.stringify(results, null, 2)
+);
 
-    const extracted = extractArray(results);
+const extracted = extractArray(results);
 
-    console.log(
-      '[Trending] Extracted items:',
-      extracted.length
-    );
+console.log(
+  '[Trending] Extracted items:',
+  extracted.length
+);
 
-    const transformed = extracted
-      .map(transformAnime)
-      .filter(Boolean);
+const transformed = extracted
+  .map(transformAnime)
+  .filter(Boolean);
 
-    console.log(
-      '[Trending] Transformed items:',
-      transformed.length
-    );
+console.log(
+  '[Trending] Transformed items:',
+  transformed.length
+);
 
-    return transformed;
-  } catch (err) {
-    console.error(
-      '[Trending] Miruro request failed:',
-      err?.response?.status || '',
-      err?.response?.data || err?.message || err
-    );
+return transformed;
 
-    throw err;
-  }
+} catch (err) {
+console.error(
+'[Trending] Miruro request failed:',
+err?.response?.status || '',
+err?.response?.data || err?.message || err
+);
+throw err;
+}
 };
-
 
 exports.getRecentAnime = async () => {
   try {
