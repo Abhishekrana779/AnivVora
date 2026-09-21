@@ -23,14 +23,7 @@ exports.register = asyncHandler(async (req, res) => {
   const user = await User.create({ username: normalizedUsername, email: normalizedEmail, password });
 
   const token = generateToken(user._id);
-  const tokenMaxAge = 7 * 24 * 60 * 60 * 1000;
 
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-    maxAge: tokenMaxAge
-  });
 
   return apiResponse.success(res, 201, 'User registered successfully', {
     token,
@@ -77,14 +70,7 @@ exports.login = asyncHandler(async (req, res) => {
   await user.save();
 
   const token = generateToken(user._id);
-  const tokenMaxAge = 7 * 24 * 60 * 60 * 1000;
 
-  res.cookie('token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-    maxAge: tokenMaxAge
-  });
 
   return apiResponse.success(res, 200, 'Login successful', {
     token,
@@ -99,12 +85,8 @@ exports.login = asyncHandler(async (req, res) => {
 });
 
 exports.logout = asyncHandler(async (req, res) => {
-  res.cookie('token', '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
-    maxAge: 0
-  });
+  return apiResponse.success(res, 200, 'Logged out successfully');
+});
 
   return apiResponse.success(res, 200, 'Logged out successfully');
 });
