@@ -2,7 +2,7 @@ const axios = require('axios');
 
 const rawBaseURL = (
 process.env.MIRURO_API_URL || 'http://localhost:3000'
-).replace(//+$/, '');
+).replace(/\/+$/, '');
 
 const instance = axios.create({
 baseURL: rawBaseURL,
