@@ -2,7 +2,7 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios"
 import toast from "react-hot-toast"
 import { storage } from "../utils/storage"
 
-const API_BASE_URL = import.meta.env.DEV ? "http://localhost:5000/api" : "/api"
+const API_BASE_URL = "https://anivvora-server.onrender.com/api";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
