@@ -60,44 +60,92 @@ const unwrap = (result) => {
 exports.getTrendingAnime = async () => {
   try {
     const results = await miruro.fetchTrending(1);
-    return extractArray(results).map(transformAnime).filter(Boolean);
-  } catch {
-    return [];
+
+    console.log(
+      '[Trending] Miruro response:',
+      JSON.stringify(results, null, 2)
+    );
+
+    const extracted = extractArray(results);
+
+    console.log(
+      '[Trending] Extracted items:',
+      extracted.length
+    );
+
+    const transformed = extracted
+      .map(transformAnime)
+      .filter(Boolean);
+
+    console.log(
+      '[Trending] Transformed items:',
+      transformed.length
+    );
+
+    return transformed;
+  } catch (err) {
+    console.error(
+      '[Trending] Miruro request failed:',
+      err?.response?.status || '',
+      err?.response?.data || err?.message || err
+    );
+
+    throw err;
   }
 };
+
 
 exports.getRecentAnime = async () => {
   try {
     const results = await miruro.fetchRecent(1);
-    return extractArray(results).map(transformAnime).filter(Boolean);
-  } catch {
-    return [];
+
+    console.log(
+      '[Recent] Miruro response:',
+      JSON.stringify(results, null, 2)
+    );
+
+    const extracted = extractArray(results);
+
+    console.log('[Recent] Extracted items:', extracted.length);
+
+    return extracted
+      .map(transformAnime)
+      .filter(Boolean);
+  } catch (err) {
+    console.error(
+      '[Recent] Miruro request failed:',
+      err?.response?.status || '',
+      err?.response?.data || err?.message || err
+    );
+
+    throw err;
   }
 };
 
 exports.getPopularAnime = async () => {
   try {
     const results = await miruro.fetchPopular(1);
-    let list = extractArray(results).map(transformAnime).filter(Boolean);
-    if (list.length < 30) {
-      try {
-        const next = await miruro.fetchPopular(2);
-        const nextList = extractArray(next).map(transformAnime).filter(Boolean);
-        const seen = new Set(list.map((a) => a.id));
-        for (const item of nextList) {
-          if (!seen.has(item.id)) {
-            list.push(item);
-            seen.add(item.id);
-          }
-          if (list.length >= 30) break;
-        }
-      } catch {
-        // ignore
-      }
-    }
-    return list.slice(0, 30);
-  } catch {
-    return [];
+
+    console.log(
+      '[Popular] Miruro response:',
+      JSON.stringify(results, null, 2)
+    );
+
+    const extracted = extractArray(results);
+
+    console.log('[Popular] Extracted items:', extracted.length);
+
+    return extracted
+      .map(transformAnime)
+      .filter(Boolean);
+  } catch (err) {
+    console.error(
+      '[Popular] Miruro request failed:',
+      err?.response?.status || '',
+      err?.response?.data || err?.message || err
+    );
+
+    throw err;
   }
 };
 
