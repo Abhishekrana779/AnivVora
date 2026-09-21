@@ -23,24 +23,31 @@ export function AuthContextProvider({ children }: { children: ReactNode }) {
 
   const isAuthenticated = !!user
 
-  useEffect(() => {
-    let isMounted = true
-    const bootstrap = async () => {
-      try {
-        const userData = await authApi.getMe()
-        if (isMounted) setUser(userData)
-      } catch (error) {
-        console.error('[AuthContext] getMe failed:', error)
-        if (isMounted) setUser(null)
-      } finally {
-        if (isMounted) setLoading(false)
-      }
+ useEffect(() => {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    setUser(null);
+    setLoading(false);
+    return;
+  }
+
+  const loadUser = async () => {
+    try {
+      const response = await getMe();
+      setUser(response.data);
+    } catch (error) {
+      console.error("[AuthContext] getMe failed:", error);
+
+      localStorage.removeItem("token");
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
-    bootstrap()
-    return () => {
-      isMounted = false
-    }
-  }, [])
+  };
+
+  loadUser();
+}, []);
 
   const login = async (data: { email: string; password: string }) => {
     const response = await authApi.login(data)
