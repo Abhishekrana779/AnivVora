@@ -45,7 +45,6 @@ async (err) => {
 const status = err?.response?.status;
 const url = err?.config?.url;
 
-```
 if (!shouldRetry(err)) {
   console.error(
     '[Miruro]',
@@ -86,7 +85,6 @@ console.warn(
 await sleep(delay);
 
 return instance(config);
-```
 
 }
 );
