@@ -88,7 +88,6 @@ exports.logout = asyncHandler(async (req, res) => {
   return apiResponse.success(res, 200, 'Logged out successfully');
 });
 
-});
 
 exports.getMe = asyncHandler(async (req, res) => {
   return apiResponse.success(res, 200, 'User fetched successfully', {
