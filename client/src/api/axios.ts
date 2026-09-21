@@ -5,7 +5,7 @@ type InternalAxiosRequestConfig,
 import toast from "react-hot-toast"
 import { storage } from "../utils/storage"
 
-const API_BASE_URL = "https://anivvora-server.onrender.com/api/anime"
+const API_BASE_URL = "https://anivvora-server.onrender.com/api"
 
 export const api = axios.create({
 baseURL: API_BASE_URL,
